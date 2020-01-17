@@ -95,8 +95,9 @@ class Actor(nn.Module):
 		x = F.relu(self.fc2(x))
 		x = F.relu(self.fc3(x))
 		action = F.tanh(self.fc4(x))
-
-		action = action * self.action_lim
+		# import pdb
+		# pdb.set_trace()
+		action = action * 2
 
 		return action
 

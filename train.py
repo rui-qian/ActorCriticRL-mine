@@ -51,6 +51,7 @@ class Trainer:
 		:return: sampled action (Numpy array)
 		"""
 		state = Variable(torch.from_numpy(state))
+		
 		action = self.target_actor.forward(state).detach()
 		return action.data.numpy()
 
@@ -62,6 +63,7 @@ class Trainer:
 		"""
 		state = Variable(torch.from_numpy(state))
 		action = self.actor.forward(state).detach()
+		
 		new_action = action.data.numpy() + (self.noise.sample() * self.action_lim)
 		return new_action
 
@@ -81,6 +83,7 @@ class Trainer:
 		# Use target actor exploitation policy here for loss evaluation
 		a2 = self.target_actor.forward(s2).detach()
 		next_val = torch.squeeze(self.target_critic.forward(s2, a2).detach())
+		
 		# y_exp = r + gamma*Q'( s2, pi'(s2))
 		y_expected = r1 + GAMMA*next_val
 		# y_pred = Q( s1, a1)
@@ -114,7 +117,7 @@ class Trainer:
 		"""
 		torch.save(self.target_actor.state_dict(), './Models/' + str(episode_count) + '_actor.pt')
 		torch.save(self.target_critic.state_dict(), './Models/' + str(episode_count) + '_critic.pt')
-		print 'Models saved successfully'
+		print('Models saved successfully')
 
 	def load_models(self, episode):
 		"""
@@ -126,4 +129,4 @@ class Trainer:
 		self.critic.load_state_dict(torch.load('./Models/' + str(episode) + '_critic.pt'))
 		utils.hard_update(self.target_actor, self.actor)
 		utils.hard_update(self.target_critic, self.critic)
-		print 'Models loaded succesfully'
+		print('Models loaded succesfully')
